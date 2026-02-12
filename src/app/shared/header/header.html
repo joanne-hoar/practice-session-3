@@ -1,0 +1,9 @@
+<div id="header">
+    <h1> {{ title }}</h1>
+    <nav>
+        <!-- Navigation links -->
+        <a class="button" routerLink="/home" routerLinkActive="activebutton">Home</a>
+        <a class="button" routerLink="/products" routerLinkActive="activebutton">Products</a>
+        <a class="button" routerLink="/cart" routerLinkActive="activebutton">Cart ({{ cartService.itemCount() }})</a>
+    </nav>
+</div>

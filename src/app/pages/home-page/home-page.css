@@ -1,0 +1,13 @@
+.storefront-image {
+  max-width: 900px;
+  margin: 3rem auto;
+  text-align: center;
+}
+
+.storefront-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: block;
+}

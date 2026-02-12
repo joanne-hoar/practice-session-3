@@ -1,0 +1,38 @@
+.empty-cart {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #8d6e63;
+  margin: 3rem 0;
+  padding: 2rem;
+}
+
+.cart-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+}
+
+.cart-actions p {
+  margin: 0;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #2d5016;
+}
+
+.cart-items {
+  display: grid;
+  gap: 1rem;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.cart-item app-product-card {
+  flex: 1;
+}
