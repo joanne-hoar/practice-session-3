@@ -1,1 +1,18 @@
-<p>product-detail-page works!</p>
+<div class="product-detail-container">
+  @if (product(); as prod) {
+    <div class="product-detail">
+      <img [src]="'assets/products/' + prod.image" [alt]="prod.name" class="product-image" />
+      <div class="product-info">
+        <h1>{{ prod.name }}</h1>
+        <p class="product-id">Product ID: {{ prod.id }}</p>
+        <button class="back-button" (click)="goBack()">← Back to Products</button>
+      </div>
+    </div>
+  } @else {
+    <div class="error">
+      <h2>Product Not Found</h2>
+      <p>Sorry, we couldn't find the product you're looking for.</p>
+      <button class="back-button" (click)="goBack()">← Back to Products</button>
+    </div>
+  }
+</div>
