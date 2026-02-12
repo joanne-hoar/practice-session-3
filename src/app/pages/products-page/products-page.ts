@@ -1,24 +1,41 @@
-import { Component, inject } from '@angular/core';
+
+import { Component, inject, signal, computed } from '@angular/core';
 import { ProductCard } from '../../product-card/product-card';
 import { CartService } from '../../services/cart-service';
 import { ProductsDataService } from '../../services/products-data.service';
+import { SearchForm } from '../../search-form/search-form';
 
 @Component({
   selector: 'app-products-page',
-  imports: [ProductCard],
+  standalone: true,
+  imports: [ProductCard, SearchForm],
   templateUrl: './products-page.html',
   styleUrl: './products-page.css',
 })
 export class ProductsPage {
-  // inject() is the modern Angular 17+ way to inject dependencies
   cartService = inject(CartService);
   productsDataService = inject(ProductsDataService);
+  searchQuery = signal('');
 
-  // Event handler: Receives product ID from child ProductCard component
+  filteredProducts = computed(() => {
+    const query = this.searchQuery().toLowerCase().trim();
+    if (!query) {
+      return this.productsDataService.products();
+    }
+    return this.productsDataService.products().filter(p => 
+      p.name.toLowerCase().includes(query) ||
+      (p.description?.toLowerCase().includes(query) ?? false)
+    );
+  });
+
   receiveAddToCart(id: number) {
     const product = this.productsDataService.getProductById(id);
     if (product) {
       this.cartService.addToCart(product);
     }
+  }
+
+  onSearchChange(query: string) {
+    this.searchQuery.set(query);
   }
 }

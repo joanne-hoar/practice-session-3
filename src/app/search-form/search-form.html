@@ -1,1 +1,13 @@
-<p>search-form works!</p>
+
+<div class="search-form">
+	<div class="form-group">
+		<label for="search">Search Products:</label>
+		<input 
+			id="search"
+			type="text"
+			[(ngModel)]="searchQuery"
+			(input)="onSearchChange()"
+			placeholder="Type to search by name..."
+		/>
+	</div>
+</div>

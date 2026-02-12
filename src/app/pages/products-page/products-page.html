@@ -1,14 +1,21 @@
+
 <div class="products-section page-container">
   <h2 class="page-heading">Products</h2>
   <p class="info-badge">Items in cart: {{ cartService.itemCount() }}</p>
-  
+
+  <app-search-form (searchChange)="onSearchChange($event)"></app-search-form>
+
+  @if (searchQuery()) {
+    <p class="search-info">Searching for: "{{ searchQuery() }}"</p>
+  }
+
   <div class="products-grid">
-    <!-- Modern @for syntax: Iterates over products array -->
-    <!-- track product.id: Tells Angular how to identify each item for efficient updates -->
-    @for (product of productsDataService.products(); track product.id) {
-      <!-- [product]="product" passes data to child component -->
-      <!-- (addToCartEvent) listens for events from child component -->
+    @for (product of filteredProducts(); track product.id) {
       <app-product-card [product]="product" (addToCartEvent)="receiveAddToCart($event)"></app-product-card>
     }
   </div>
+
+  @if (filteredProducts().length === 0) {
+    <p class="no-results">No products found matching "{{ searchQuery() }}"</p>
+  }
 </div>
