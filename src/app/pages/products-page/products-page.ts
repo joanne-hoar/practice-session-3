@@ -8,6 +8,7 @@ import { SearchForm } from '../../search-form/search-form';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 
+
 @Component({
   selector: 'app-products-page',
   standalone: true,
@@ -15,6 +16,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   templateUrl: './products-page.html',
   styleUrl: './products-page.css',
 })
+export class ProductsPage {
   cartService = inject(CartService);
   productsDataService = inject(ProductsDataService);
   route = inject(ActivatedRoute);
@@ -26,7 +28,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
   constructor() {
     effect(() => {
-      const params = this.queryParams();
+      const params = this.queryParams() as { [key: string]: any };
       this.searchQuery.set(params['search'] || '');
     });
   }

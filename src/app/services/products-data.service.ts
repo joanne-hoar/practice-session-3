@@ -31,7 +31,7 @@ export class ProductsDataService {
       id: 4,
       name: "T-Shirt",
       image: "t-shirt.jpg",
-      description: "Wear this t-shirt and you will have good luck."
+      description: "Wear this t-shirt and you will have good luck. And, good look!"
     },
     {
       id: 5,
@@ -55,13 +55,13 @@ export class ProductsDataService {
       id: 8,
       name: "Postcard",
       image: "postcard.jpg",
-      description: "Let them know that you're thinking of them."
+      description: "Writing to let them know that you're thinking of them."
     },
     {
       id: 9,
       name: "Pens",
       image: "pens.jpg",
-      description: "Contains ink."
+      description: "Contains ink. For writing."
     }
   ]);
 
