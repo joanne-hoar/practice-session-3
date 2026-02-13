@@ -40,25 +40,11 @@ Example usage:
 ```html
 <app-product-card
   [product]="product"
-      Validators.required,
-      Validators.min(1),
-      Validators.max(5)
-    ]],
-  });
-
-  onSubmitReview() {
-    if (this.reviewForm.valid) {
-      // In a real app, submit to backend here
-      console.log('Review submitted:', this.reviewForm.value);
-      alert('Thank you for your review!');
-      this.reviewForm.reset();
-    }
-  }
-
-  goBack() {
-    this.router.navigate(['/products']);
-  }
-}
+  [showLink]="false"
+  [showAddButton]="true"
+  [showDescription]="true"
+  (addToCartEvent)="cartService.addToCart(product)"
+></app-product-card>
 ```
 
 ---
@@ -221,35 +207,7 @@ export function ratingRangeValidator(min: number, max: number): ValidatorFn {
   };
 }
 
-/**
- * Custom validator for review text quality
- * Ensures review contains meaningful content (not just repeated characters)
- */
-export function meaningfulTextValidator(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    if (!control.value) {
-      return null;
-    }
-    
-    const text = control.value.trim();
-    
-    // Check if text is just repeated characters (e.g., "aaaaaaa")
-    const repeatedChar = /^(.)\1+$/;
-    if (repeatedChar.test(text)) {
-      return { meaningfulText: true };
-    }
-    
-    // Check if text has at least 2 unique words
-    const words = text.split(/\s+/).filter((w: string) => w.length > 0);
-    const uniqueWords = new Set(words);
-    
-    if (uniqueWords.size < 2) {
-      return { meaningfulText: true };
-    }
-    
-    return null;
-  };
-}
+
 
 /**
  * Custom validator to check for profanity or inappropriate content
@@ -275,10 +233,29 @@ export function noProfanityValidator(): ValidatorFn {
   };
 ```
 
+
 ### Step 2: Use Custom Validators in the Review Form
 
+To use your custom validator, import it and add it to the `rating` field in your form group:
 
----
+```typescript
+import { ratingRangeValidator } from '../validators/review-validators';
+
+reviewForm: FormGroup = this.fb.group({
+  reviewerName: ['', [
+    Validators.required,
+    Validators.minLength(3),
+    Validators.pattern('^[a-zA-Z ]+$')
+  ]],
+  rating: ['', [
+    Validators.required,
+    ratingRangeValidator(1, 5)
+  ]],
+});
+```
+
+This ensures the rating must be between 1 and 5, using your custom logic. You can add other custom validators (like `noProfanityValidator`) as needed.
+
 
 ## Part 5: Test Your Review Form
 
