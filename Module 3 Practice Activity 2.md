@@ -28,60 +28,25 @@ This demonstrates the **same concepts** you'll need for Assignment 3, but in a d
 
 ### Step 2: Make ProductCard Reusable (Optional Display Modes)
 
-First, let's update ProductCard to support different display modes:
+The `ProductCard` component now supports flexible display modes:
 
-Update `product-card.ts`:
+* Inputs:
+  * `showLink` (default: true): Show link to detail page
+  * `showAddButton` (default: true): Show add to cart button
+  * `showDescription` (default: false): Show full description
 
-```typescript
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { Product } from '../product';
-
-@Component({
-  selector: 'app-product-card',
-  imports: [RouterLink],
-  templateUrl: './product-card.html',
-  styleUrl: './product-card.css',
-})
-export class ProductCard {
-  @Input() product!: Product;
-  
-  // Optional inputs for flexible display
-  @Input() showLink = true;          // Show link to detail page?
-  @Input() showAddButton = true;     // Show add to cart button?
-  @Input() showDescription = false;  // Show full description?
-
-  @Output() addToCartEvent = new EventEmitter<number>();
-
-  onAddToCart() {
-    this.addToCartEvent.emit(this.product.id);
-  }
-}
-```
-
-Update `product-card.html` to use conditional rendering:
+Example usage:
 
 ```html
-<div class="product-card">
-  @if (showLink) {
-    <a [routerLink]="['/products', product.id]" class="product-link">
-      <img [src]="'assets/products/' + product.image" [alt]="product.name" />
-      <h3>{{ product.name }}</h3>
-    </a>
-  } @else {
-    <img [src]="'assets/products/' + product.image" [alt]="product.name" />
-    <h3>{{ product.name }}</h3>
-  }
-  
-  @if (showDescription && product.description) {
-    <p class="description">{{ product.description }}</p>
-  }
-  
-  @if (showAddButton) {
-    <button class="add-btn" (click)="onAddToCart()">Add to Cart</button>
-  }
-</div>
+<app-product-card
+  [product]="product"
+  [showLink]="false"
+  [showAddButton]="true"
+  [showDescription]="true"
+  (addToCartEvent)="cartService.addToCart(product)"
+></app-product-card>
 ```
+
 
 ### Step 3: Reuse ProductCard in Product Detail
 

@@ -1,12 +1,14 @@
 <div class="product-detail-container">
   @if (product(); as prod) {
     <div class="product-detail">
-      <img [src]="'assets/products/' + prod.image" [alt]="prod.name" class="product-image" />
-      <div class="product-info">
-        <h1>{{ prod.name }}</h1>
-        <p class="product-id">Product ID: {{ prod.id }}</p>
-        <button class="back-button" (click)="goBack()">← Back to Products</button>
-      </div>
+      <app-product-card
+        [product]="prod"
+        [showLink]="false"
+        [showAddButton]="true"
+        [showDescription]="true"
+        (addToCartEvent)="addToCart($event)"
+      ></app-product-card>
+      <button class="back-button" (click)="goBack()">← Back to Products</button>
     </div>
   } @else {
     <div class="error">

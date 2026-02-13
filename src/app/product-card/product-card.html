@@ -1,11 +1,19 @@
 <div class="product-card card">
-    <!-- RouterLink for navigation to product detail page -->
-    <a [routerLink]="['/products', product.id]" class="product-link">
-        <!-- square brackets [ ] for property binding -->
+    @if (showLink) {
+        <a [routerLink]="['/products', product.id]" class="product-link">
+            <img [src]="'assets/products/' + product.image" [alt]="product.name" />
+            <h3>{{ product.name }}</h3>
+        </a>
+    } @else {
         <img [src]="'assets/products/' + product.image" [alt]="product.name" />
-        <!-- {{ }} syntax used for interpolation, display as text -->
         <h3>{{ product.name }}</h3>
-    </a>
-    <!-- button click invokes custom event handler in ProductClass -->
-    <button (click)="onAddToCart()">Add to Cart</button>
+    }
+
+    @if (showDescription && product.description) {
+        <p class="description">{{ product.description }}</p>
+    }
+
+    @if (showAddButton) {
+        <button class="add-btn" (click)="onAddToCart()">Add to Cart</button>
+    }
 </div>
