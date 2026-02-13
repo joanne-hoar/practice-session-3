@@ -4,9 +4,9 @@
 ## Angular Search and Filtering with Signals
 
 ### Learning Objectives
-- Implement search form using Angular signals
-- Filter product lists with computed signals
-- Integrate search with query parameters for bookmarking
+- Build a search form using Angular signals
+- Filter and display product lists dynamically with computed signals
+- Integrate search state with query parameters for bookmarking and sharing
 
 ### Prerequisites
 - Complete Practice Activity 1 (Routing)

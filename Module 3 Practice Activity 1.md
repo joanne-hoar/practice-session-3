@@ -4,9 +4,8 @@
 ## Advanced Angular Routing and Form Validation
 
 ### Learning Objectives
-- Master route parameters and component input binding
-- Implement form validation with reactive forms
-- Use query parameters for search and filtering
+- Master advanced Angular routing, including route parameters and redirects
+- Use component input binding with routes
 - Navigate programmatically in Angular
 
 ### Prerequisites

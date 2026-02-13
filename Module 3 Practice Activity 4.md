@@ -4,9 +4,9 @@
 ## Angular Reactive Forms with Custom Validation
 
 ### Learning Objectives
-- Master Angular reactive forms and custom validators needed for Assignment 3
+- Build and validate Angular reactive forms
+- Create and apply custom validator functions
 - Implement programmatic navigation after form submission
-- Create custom validator functions for complex validation rules
 
 ### Prerequisites
 - Complete Module 1 Practice Activities and Practice Activity 1
@@ -21,9 +21,7 @@ Continue in your `practice-session` project. We'll add a review form to the prod
 
 We'll create a form where users can submit product reviews with:
 - Reviewer name (text validation)
-- Email (email validation)
 - Rating (number validation)
-- Review text (length validation)
 
 This demonstrates the **same concepts** you'll need for Assignment 3, but in a different context.
 
@@ -207,31 +205,6 @@ export function ratingRangeValidator(min: number, max: number): ValidatorFn {
 		return null;
 	};
 }
-
-
-
-/**
- * Custom validator to check for profanity or inappropriate content
- * Simplified version for teaching purposes
- */
-export function noProfanityValidator(): ValidatorFn {
-	return (control: AbstractControl): ValidationErrors | null => {
-		if (!control.value) {
-			return null;
-		}
-    
-		// Simple list of words to block (extend as needed)
-		const blockedWords = ['spam', 'fake', 'scam'];
-		const text = control.value.toLowerCase();
-    
-		for (const word of blockedWords) {
-			if (text.includes(word)) {
-				return { profanity: true };
-			}
-		}
-    
-		return null;
-	};
 ```
 
 
@@ -262,24 +235,22 @@ This ensures the rating must be between 1 and 5, using your custom logic. You ca
 
 ### Testing Checklist:
 
-1. **Required Field Validation:**
-	 - Try submitting empty form → All fields should show errors when touched
-   
-2. **Reviewer Name Validation:**
-	 - Try "Jo" → Should fail (less than 3 characters)
-	 - Try "John123" → Should fail (contains numbers)
-	 - Try "John" → Should pass ✓
+1. **Required Field Validation (Built-in):**
+   - Try submitting the empty form → Both fields should show "required" errors when touched.
 
+2. **Reviewer Name Field (Built-in Validators):**
+   - Try "Jo" → Should fail (minLength error)
+   - Try "John123" → Should fail (pattern error: only letters and spaces allowed)
+   - Try "John" → Should pass (valid)
 
-4. **Rating Validation (Custom Validator):**
-	 - Try "0" → Should fail (below range)
-	 - Try "6" → Should fail (above range)
-	 - Try "3" → Should pass ✓
+3. **Rating Field (Built-in and Custom Validators):**
+   - Try leaving blank → Should fail (required error)
+   - Try "0" or "6" → Should fail (custom range validator)
+   - Try "3" → Should pass (valid)
 
-
-7. **Form Submission:**
-	 - Fill all fields correctly → Submit button should be enabled
-	 - Click submit → Form should reset and show success message
+4. **Form Submission:**
+   - Fill both fields with valid values → Submit button should be enabled
+   - Click submit → Form should reset and show a success message
 
 
 **Key Concepts for Assignment 3:**
@@ -292,4 +263,4 @@ This ensures the rating must be between 1 and 5, using your custom logic. You ca
 
 ---
 
-**Next Steps:** Practice Activity 3 will cover client-side validation in React.
+**Next Steps:** Save all files for this activity. You now have a basic Angular app with reactive forms, custom validation, and programmatic navigation. We will deploy this app to Azure in Module 4.
