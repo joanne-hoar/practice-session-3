@@ -1,295 +1,238 @@
+
 # Front End Frameworks: Module 3: Practice Activity 2
 
-## Angular Reactive Forms with Custom Validation
+## Angular Search and Filtering with Signals
 
 ### Learning Objectives
-- Master Angular reactive forms and custom validators needed for Assignment 3
-- Implement programmatic navigation after form submission
-- Create custom validator functions for complex validation rules
+- Implement search form using Angular signals
+- Filter product lists with computed signals
+- Integrate search with query parameters for bookmarking
 
 ### Prerequisites
-- Complete Module 1 Practice Activities and Practice Activity 1
+- Complete Practice Activity 1 (Routing)
 
 ---
 
-## Part 1: Add Product Review Form
+## Part 1: Create Search Form Component
 
-Continue in your `practice-session` project. We'll add a review form to the product detail page to practice reactive forms and validation.
+Now let's add a simple search form to filter products by name, demonstrating modern Angular form binding with signals.
 
-### Step 1: Understand the Goal
+### Step 1: Create Search Form Component
 
-We'll create a form where users can submit product reviews with:
-- Reviewer name (text validation)
-- Email (email validation)
-- Rating (number validation)
-- Review text (length validation)
-
-This demonstrates the **same concepts** you'll need for Assignment 3, but in a different context.
-
-### Step 2: Make ProductCard Reusable (Optional Display Modes)
-
-The `ProductCard` component now supports flexible display modes:
-
-* Inputs:
-  * `showLink` (default: true): Show link to detail page
-  * `showAddButton` (default: true): Show add to cart button
-  * `showDescription` (default: false): Show full description
-
-Example usage:
-
-```html
-<app-product-card
-  [product]="product"
-  [showLink]="false"
-  [showAddButton]="true"
-  [showDescription]="true"
-  (addToCartEvent)="cartService.addToCart(product)"
-></app-product-card>
+```bash
+ng generate component search-form
 ```
 
----
+### Step 2: Implement Search with Model Signal (Angular 17+)
 
-## Part 2: Create the Review Form Template
+Update `search-form.ts`:
 
-Update `product-detail.html` to include the product info AND the review form:
+```typescript
+import { Component, output, model } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+	selector: 'app-search-form',
+	standalone: true,
+	imports: [FormsModule],
+	templateUrl: './search-form.html',
+	styleUrl: './search-form.css'
+})
+export class SearchForm {
+	// Two-way binding with model signal (Angular 17+)
+	searchQuery = model<string>('');
+  
+	// Output to notify parent of search changes
+	searchChange = output<string>();
+
+	onSearchChange() {
+		this.searchChange.emit(this.searchQuery());
+	}
+}
+```
+
+### Step 3: Create Search Form Template
+
+In `search-form.html`:
 
 ```html
-<div class="product-detail-container">
-  @if (product(); as prod) {
-    <!-- Reuse ProductCard component with custom display options! -->
-    <div class="product-info">
-      <app-product-card 
-        [product]="prod"
-        [showLink]="false"
-        [showAddButton]="false"
-        [showDescription]="true"
-      ></app-product-card>
-      
-      <p class="category"><strong>Category:</strong> {{ prod.category }}</p>
-      <button (click)="goBack()">Back to Products</button>
-    </div>
-
-    <!-- Review Form Section -->
-    <div class="review-section">
-      <h2>Write a Review</h2>
-      
-      <form [formGroup]="reviewForm" (ngSubmit)="onSubmitReview()">
-        
-        <!-- Reviewer Name Field -->
-        <div class="form-group">
-          <label for="reviewerName">Your Name *</label>
-          <input 
-            id="reviewerName"
-            type="text" 
-            formControlName="reviewerName"
-            placeholder="Enter your name"
-            [class.invalid]="reviewForm.get('reviewerName')?.touched && reviewForm.get('reviewerName')?.invalid"
-          />
-          @if (reviewForm.get('reviewerName')?.touched && reviewForm.get('reviewerName')?.invalid) {
-            <div class="error">
-              @if (reviewForm.get('reviewerName')?.errors?.['required']) {
-                <span>Name is required.</span>
-              }
-              @if (reviewForm.get('reviewerName')?.errors?.['minlength']) {
-                <span>Name must be at least 3 characters.</span>
-              }
-              @if (reviewForm.get('reviewerName')?.errors?.['pattern']) {
-                <span>Name can only contain letters and spaces.</span>
-              }
-            </div>
-          }
-        </div>
-
-
-        <!-- Rating Field -->
-        <div class="form-group">
-          <label for="rating">Rating (1-5) *</label>
-          <input 
-            id="rating"
-            type="number" 
-            formControlName="rating"
-            min="1"
-            max="5"
-            placeholder="5"
-            [class.invalid]="reviewForm.get('rating')?.touched && reviewForm.get('rating')?.invalid"
-          />
-          @if (reviewForm.get('rating')?.touched && reviewForm.get('rating')?.invalid) {
-            <div class="error">
-              @if (reviewForm.get('rating')?.errors?.['required']) {
-                <span>Rating is required.</span>
-              }
-              @if (reviewForm.get('rating')?.errors?.['min'] || reviewForm.get('rating')?.errors?.['max']) {
-                <span>Rating must be between 1 and 5.</span>
-              }
-            </div>
-          }
-        </div>
-
-
-        <!-- Submit Button -->
-        <button 
-          type="submit" 
-          [disabled]="!reviewForm.valid"
-        >
-          Submit Review
-        </button>
-      </form>
-    </div>
-    
-  } @else {
-    <div class="error">
-      <h2>Product Not Found</h2>
-      <button (click)="goBack()">Back to Products</button>
-    </div>
-  }
+<div class="search-form">
+	<div class="form-group">
+		<label for="search">Search Products:</label>
+		<input 
+			id="search"
+			type="text"
+			[(ngModel)]="searchQuery"
+			(input)="onSearchChange()"
+			placeholder="Type to search by name..."
+		/>
+	</div>
 </div>
 ```
 
 ---
 
-## Part 3: Style the Form
+## Part 2: Integrate Search into Products Page
 
-Update `product-detail.css`:
+Update `products-page.ts`:
 
-```css
-.form-group {
-  margin-bottom: 1rem;
+```typescript
+import { Component, inject, signal, computed } from '@angular/core';
+import { ProductService } from '../../services/product-service';
+import { ProductList } from '../../product-list/product-list';
+import { SearchForm } from '../../search-form/search-form';
+
+@Component({
+	selector: 'app-products-page',
+	standalone: true,
+	imports: [ProductList, SearchForm],
+	templateUrl: './products-page.html',
+	styleUrl: './products-page.css'
+})
+export class ProductsPage {
+	productService = inject(ProductService);
+	searchQuery = signal('');
+  
+	// Computed signal automatically filters when search changes
+	filteredProducts = computed(() => {
+		const query = this.searchQuery().toLowerCase().trim();
+		if (!query) {
+			return this.productService.products();
+		}
+		return this.productService.products().filter(p => 
+			p.name.toLowerCase().includes(query) ||
+			p.description.toLowerCase().includes(query)
+		);
+	});
+
+	onSearchChange(query: string) {
+		this.searchQuery.set(query);
+	}
 }
-label {
-  display: block;
-  margin-bottom: 0.25rem;
-}
-input[type="text"],
-input[type="number"] {
-  width: 100%;
-  padding: 0.5rem;
-  box-sizing: border-box;
-}
-.error {
-  color: red;
-  font-size: 0.9em;
-}
-button[type="submit"] {
-  margin-top: 1rem;
-}
+```
+
+Update `products-page.html`:
+
+```html
+<div class="products-page">
+	<h1>Products</h1>
+  
+	<app-search-form (searchChange)="onSearchChange($event)"></app-search-form>
+  
+	@if (searchQuery()) {
+		<p class="search-info">Searching for: "{{ searchQuery() }}"</p>
+	}
+  
+	@if (filteredProducts().length > 0) {
+		<div class="products-grid">
+			@for (product of filteredProducts(); track product.id) {
+				<app-product-card [product]="product"></app-product-card>
+			}
+		</div>
+	} @else {
+		<p class="no-results">No products found matching "{{ searchQuery() }}"</p>
+	}
+</div>
 ```
 
 ---
 
-## Part 4: Add Custom Validators
+## Part 3: Query Parameters for Search
 
-Now let's create custom validators for more complex validation rules.
+Query parameters allow you to share and bookmark search results. Let's sync the search with the URL.
 
-### Step 1: Create Validators File
+### Step 1: Update ProductsPage to Use Query Parameters (Angular 17+)
 
-Create `src/app/validators/review-validators.ts`:
+Modify `products-page.ts`:
 
 ```typescript
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { Component, inject, signal, computed, effect } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ProductService } from '../../services/product-service';
+import { SearchForm } from '../../search-form/search-form';
+import { ProductList } from '../../product-list/product-list';
 
-/**
- * Custom validator to ensure rating is within valid range
- * More flexible than min/max for teaching purposes
- */
-export function ratingRangeValidator(min: number, max: number): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    if (!control.value) {
-      return null;
-    }
-    
-    const value = Number(control.value);
-    
-    if (value < min || value > max) {
-      return { ratingRange: { min, max, actual: value } };
-    }
-    
-    return null;
-  };
+@Component({
+	selector: 'app-products-page',
+	standalone: true,
+	imports: [SearchForm, ProductList],
+	templateUrl: './products-page.html',
+	styleUrl: './products-page.css'
+})
+export class ProductsPage {
+	productService = inject(ProductService);
+	route = inject(ActivatedRoute);
+	router = inject(Router);
+  
+	// Convert query params to signal
+	queryParams = toSignal(this.route.queryParams, { initialValue: {} });
+  
+	searchQuery = signal('');
+
+	// Sync search signal with query params using effect
+	constructor() {
+		effect(() => {
+			const params = this.queryParams();
+			this.searchQuery.set(params['search'] || '');
+		});
+	}
+
+	// Computed signal for filtered products
+	filteredProducts = computed(() => {
+		const query = this.searchQuery().toLowerCase().trim();
+		if (!query) {
+			return this.productService.products();
+		}
+		return this.productService.products().filter(p => 
+			p.name.toLowerCase().includes(query) ||
+			p.description.toLowerCase().includes(query)
+		);
+	});
+
+	// Update URL when search changes
+	onSearchChange(query: string) {
+		this.router.navigate([], {
+			queryParams: { search: query || null },
+			queryParamsHandling: 'merge'
+		});
+	}
 }
-
-
-
-/**
- * Custom validator to check for profanity or inappropriate content
- * Simplified version for teaching purposes
- */
-export function noProfanityValidator(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    if (!control.value) {
-      return null;
-    }
-    
-    // Simple list of words to block (extend as needed)
-    const blockedWords = ['spam', 'fake', 'scam'];
-    const text = control.value.toLowerCase();
-    
-    for (const word of blockedWords) {
-      if (text.includes(word)) {
-        return { profanity: true };
-      }
-    }
-    
-    return null;
-  };
 ```
 
+### Step 2: Update Products Page Template
 
-### Step 2: Use Custom Validators in the Review Form
+Update `products-page.html`:
 
-To use your custom validator, import it and add it to the `rating` field in your form group:
-
-```typescript
-import { ratingRangeValidator } from '../validators/review-validators';
-
-reviewForm: FormGroup = this.fb.group({
-  reviewerName: ['', [
-    Validators.required,
-    Validators.minLength(3),
-    Validators.pattern('^[a-zA-Z ]+$')
-  ]],
-  rating: ['', [
-    Validators.required,
-    ratingRangeValidator(1, 5)
-  ]],
-});
+```html
+<div class="products-page">
+	<h1>Products</h1>
+  
+	<app-search-form (searchChange)="onSearchChange($event)"></app-search-form>
+  
+	@if (searchQuery()) {
+		<p class="search-info">Searching for: "{{ searchQuery() }}"</p>
+	}
+  
+	@if (filteredProducts().length > 0) {
+		<div class="products-grid">
+			@for (product of filteredProducts(); track product.id) {
+				<app-product-card [product]="product"></app-product-card>
+			}
+		</div>
+	} @else {
+		<p class="no-results">No products found matching "{{ searchQuery() }}"</p>
+	}
+</div>
 ```
 
-This ensures the rating must be between 1 and 5, using your custom logic. You can add other custom validators (like `noProfanityValidator`) as needed.
+### Step 3: Test Query Parameters
 
+**Try these URLs:**
+- `/products` - All products
+- `/products?search=laptop` - Search for "laptop"
+- `/products?search=gaming` - Search for "gaming" (finds Laptop and Headphones)
 
-## Part 5: Test Your Review Form
+Notice how the URL updates when you search, and you can bookmark or share these search results!
 
-### Testing Checklist:
-
-1. **Required Field Validation:**
-   - Try submitting empty form → All fields should show errors when touched
-   
-2. **Reviewer Name Validation:**
-   - Try "Jo" → Should fail (less than 3 characters)
-   - Try "John123" → Should fail (contains numbers)
-   - Try "John" → Should pass ✓
-
-
-4. **Rating Validation (Custom Validator):**
-   - Try "0" → Should fail (below range)
-   - Try "6" → Should fail (above range)
-   - Try "3" → Should pass ✓
-
-
-
-7. **Form Submission:**
-   - Fill all fields correctly → Submit button should be enabled
-   - Click submit → Form should reset and show success message
-
-
-**Key Concepts for Assignment 3:**
-- Same reactive forms approach works for ANY form
-- Custom validators are functions that return `ValidatorFn`
-- Validators can be simple (no params) or parameterized
-- Always check if value exists before validating
-- Use modern `@if` syntax for error messages
-- Reuse components by making them flexible with optional `@Input()` properties
-
----
-
-**Next Steps:** Practice Activity 3 will cover client-side validation in React.
+**Next Steps:** Practice Activity 2 will cover reactive forms (required for Assignment 3) and custom validators.

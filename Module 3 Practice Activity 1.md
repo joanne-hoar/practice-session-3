@@ -1,3 +1,4 @@
+
 # Front End Frameworks: Module 3: Practice Activity 1
 
 ## Advanced Angular Routing and Form Validation
@@ -26,19 +27,19 @@ In Module 1 Practice Activity 3, you learned the fundamentals of Angular routing
 **Quick Review Exercise:**
 
 1. Open your `app.routes.ts` and review your existing routes:
-   ```typescript
-   export const routes: Routes = [
-     { path: '', redirectTo: '/home', pathMatch: 'full' },
-     { path: 'home', component: HomePage },
-     { path: 'products', component: ProductsPage }
-   ];
-   ```
+	 ```typescript
+	 export const routes: Routes = [
+		 { path: '', redirectTo: '/home', pathMatch: 'full' },
+		 { path: 'home', component: HomePage },
+		 { path: 'products', component: ProductsPage }
+	 ];
+	 ```
 
 2. Verify your header navigation is working:
-   ```html
-   <a routerLink="/home" routerLinkActive="activebutton">Home</a>
-   <a routerLink="/products" routerLinkActive="activebutton">Products</a>
-   ```
+	 ```html
+	 <a routerLink="/home" routerLinkActive="activebutton">Home</a>
+	 <a routerLink="/products" routerLinkActive="activebutton">Products</a>
+	 ```
 
 **Now let's take routing to the next level!**
 
@@ -67,10 +68,10 @@ import { ProductsPage } from './pages/products-page/products-page';
 import { ProductDetail } from './pages/product-detail/product-detail';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: HomePage },
-  { path: 'products', component: ProductsPage },
-  { path: 'products/:id', component: ProductDetail }
+	{ path: '', redirectTo: '/home', pathMatch: 'full' },
+	{ path: 'home', component: HomePage },
+	{ path: 'products', component: ProductsPage },
+	{ path: 'products/:id', component: ProductDetail }
 ];
 ```
 
@@ -86,10 +87,10 @@ import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes, withComponentInputBinding())  // Add this!
-  ]
+	providers: [
+		provideZoneChangeDetection({ eventCoalescing: true }),
+		provideRouter(routes, withComponentInputBinding())  // Add this!
+	]
 };
 ```
 
@@ -103,28 +104,28 @@ import { ProductService } from '../../services/product-service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-product-detail',
-  standalone: true,
-  imports: [],
-  templateUrl: './product-detail.html',
-  styleUrl: './product-detail.css'
+	selector: 'app-product-detail',
+	standalone: true,
+	imports: [],
+	templateUrl: './product-detail.html',
+	styleUrl: './product-detail.css'
 })
 export class ProductDetail {
-  // Route parameter automatically bound with Angular 17+ input!
-  id = input<string>();
+	// Route parameter automatically bound with Angular 17+ input!
+	id = input<string>();
 
-  productService = inject(ProductService);
-  router = inject(Router);
+	productService = inject(ProductService);
+	router = inject(Router);
   
-  // Computed signal automatically updates when id changes
-  product = computed(() => {
-    const productId = this.id();
-    return productId ? this.productService.getProduct(Number(productId)) : undefined;
-  });
+	// Computed signal automatically updates when id changes
+	product = computed(() => {
+		const productId = this.id();
+		return productId ? this.productService.getProduct(Number(productId)) : undefined;
+	});
 
-  goBack() {
-    this.router.navigate(['/products']);
-  }
+	goBack() {
+		this.router.navigate(['/products']);
+	}
 }
 ```
 
@@ -134,20 +135,20 @@ In `product-detail.html`:
 
 ```html
 <div class="product-detail-container">
-  @if (product(); as prod) {
-    <div class="product-detail">
-      <img [src]="'assets/products/' + prod.image" [alt]="prod.name" />
-      <h1>{{ prod.name }}</h1>
-      <p class="category">Category: {{ prod.category }}</p>
-      <p class="description">{{ prod.description }}</p>
-      <button (click)="goBack()">Back to Products</button>
-    </div>
-  } @else {
-    <div class="error">
-      <h2>Product Not Found</h2>
-      <button (click)="goBack()">Back to Products</button>
-    </div>
-  }
+	@if (product(); as prod) {
+		<div class="product-detail">
+			<img [src]="'assets/products/' + prod.image" [alt]="prod.name" />
+			<h1>{{ prod.name }}</h1>
+			<p class="category">Category: {{ prod.category }}</p>
+			<p class="description">{{ prod.description }}</p>
+			<button (click)="goBack()">Back to Products</button>
+		</div>
+	} @else {
+		<div class="error">
+			<h2>Product Not Found</h2>
+			<button (click)="goBack()">Back to Products</button>
+		</div>
+	}
 </div>
 ```
 
@@ -157,11 +158,11 @@ Update `product-card.html` to link to the detail page:
 
 ```html
 <div class="product-card">
-  <a [routerLink]="['/products', product.id]">
-    <img [src]="'assets/products/' + product.image" [alt]="product.name" />
-    <h3>{{ product.name }}</h3>
-  </a>
-  <button (click)="onAddToCart()">Add to Cart</button>
+	<a [routerLink]="['/products', product.id]">
+		<img [src]="'assets/products/' + product.image" [alt]="product.name" />
+		<h3>{{ product.name }}</h3>
+	</a>
+	<button (click)="onAddToCart()">Add to Cart</button>
 </div>
 ```
 
@@ -171,9 +172,9 @@ Update imports in `product-card.ts`:
 import { RouterLink } from '@angular/router';
 
 @Component({
-  // ...
-  imports: [RouterLink],
-  // ...
+	// ...
+	imports: [RouterLink],
+	// ...
 })
 ```
 
@@ -200,22 +201,22 @@ import { Component, output, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-search-form',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './search-form.html',
-  styleUrl: './search-form.css'
+	selector: 'app-search-form',
+	standalone: true,
+	imports: [FormsModule],
+	templateUrl: './search-form.html',
+	styleUrl: './search-form.css'
 })
 export class SearchForm {
-  // Two-way binding with model signal (Angular 17+)
-  searchQuery = model<string>('');
+	// Two-way binding with model signal (Angular 17+)
+	searchQuery = model<string>('');
   
-  // Output to notify parent of search changes
-  searchChange = output<string>();
+	// Output to notify parent of search changes
+	searchChange = output<string>();
 
-  onSearchChange() {
-    this.searchChange.emit(this.searchQuery());
-  }
+	onSearchChange() {
+		this.searchChange.emit(this.searchQuery());
+	}
 }
 ```
 
@@ -225,16 +226,16 @@ In `search-form.html`:
 
 ```html
 <div class="search-form">
-  <div class="form-group">
-    <label for="search">Search Products:</label>
-    <input 
-      id="search"
-      type="text"
-      [(ngModel)]="searchQuery"
-      (input)="onSearchChange()"
-      placeholder="Type to search by name..."
-    />
-  </div>
+	<div class="form-group">
+		<label for="search">Search Products:</label>
+		<input 
+			id="search"
+			type="text"
+			[(ngModel)]="searchQuery"
+			(input)="onSearchChange()"
+			placeholder="Type to search by name..."
+		/>
+	</div>
 </div>
 ```
 
@@ -249,31 +250,31 @@ import { ProductList } from '../../product-list/product-list';
 import { SearchForm } from '../../search-form/search-form';
 
 @Component({
-  selector: 'app-products-page',
-  standalone: true,
-  imports: [ProductList, SearchForm],
-  templateUrl: './products-page.html',
-  styleUrl: './products-page.css'
+	selector: 'app-products-page',
+	standalone: true,
+	imports: [ProductList, SearchForm],
+	templateUrl: './products-page.html',
+	styleUrl: './products-page.css'
 })
 export class ProductsPage {
-  productService = inject(ProductService);
-  searchQuery = signal('');
+	productService = inject(ProductService);
+	searchQuery = signal('');
   
-  // Computed signal automatically filters when search changes
-  filteredProducts = computed(() => {
-    const query = this.searchQuery().toLowerCase().trim();
-    if (!query) {
-      return this.productService.products();
-    }
-    return this.productService.products().filter(p => 
-      p.name.toLowerCase().includes(query) ||
-      p.description.toLowerCase().includes(query)
-    );
-  });
+	// Computed signal automatically filters when search changes
+	filteredProducts = computed(() => {
+		const query = this.searchQuery().toLowerCase().trim();
+		if (!query) {
+			return this.productService.products();
+		}
+		return this.productService.products().filter(p => 
+			p.name.toLowerCase().includes(query) ||
+			p.description.toLowerCase().includes(query)
+		);
+	});
 
-  onSearchChange(query: string) {
-    this.searchQuery.set(query);
-  }
+	onSearchChange(query: string) {
+		this.searchQuery.set(query);
+	}
 }
 ```
 
@@ -281,23 +282,23 @@ Update `products-page.html`:
 
 ```html
 <div class="products-page">
-  <h1>Products</h1>
+	<h1>Products</h1>
   
-  <app-search-form (searchChange)="onSearchChange($event)"></app-search-form>
+	<app-search-form (searchChange)="onSearchChange($event)"></app-search-form>
   
-  @if (searchQuery()) {
-    <p class="search-info">Searching for: "{{ searchQuery() }}"</p>
-  }
+	@if (searchQuery()) {
+		<p class="search-info">Searching for: "{{ searchQuery() }}"</p>
+	}
   
-  @if (filteredProducts().length > 0) {
-    <div class="products-grid">
-      @for (product of filteredProducts(); track product.id) {
-        <app-product-card [product]="product"></app-product-card>
-      }
-    </div>
-  } @else {
-    <p class="no-results">No products found matching "{{ searchQuery() }}"</p>
-  }
+	@if (filteredProducts().length > 0) {
+		<div class="products-grid">
+			@for (product of filteredProducts(); track product.id) {
+				<app-product-card [product]="product"></app-product-card>
+			}
+		</div>
+	} @else {
+		<p class="no-results">No products found matching "{{ searchQuery() }}"</p>
+	}
 </div>
 ```
 
@@ -318,49 +319,49 @@ import { SearchForm } from '../../search-form/search-form';
 import { ProductList } from '../../product-list/product-list';
 
 @Component({
-  selector: 'app-products-page',
-  standalone: true,
-  imports: [SearchForm, ProductList],
-  templateUrl: './products-page.html',
-  styleUrl: './products-page.css'
+	selector: 'app-products-page',
+	standalone: true,
+	imports: [SearchForm, ProductList],
+	templateUrl: './products-page.html',
+	styleUrl: './products-page.css'
 })
 export class ProductsPage {
-  productService = inject(ProductService);
-  route = inject(ActivatedRoute);
-  router = inject(Router);
+	productService = inject(ProductService);
+	route = inject(ActivatedRoute);
+	router = inject(Router);
   
-  // Convert query params to signal
-  queryParams = toSignal(this.route.queryParams, { initialValue: {} });
+	// Convert query params to signal
+	queryParams = toSignal(this.route.queryParams, { initialValue: {} });
   
-  searchQuery = signal('');
+	searchQuery = signal('');
 
-  // Sync search signal with query params using effect
-  constructor() {
-    effect(() => {
-      const params = this.queryParams();
-      this.searchQuery.set(params['search'] || '');
-    });
-  }
+	// Sync search signal with query params using effect
+	constructor() {
+		effect(() => {
+			const params = this.queryParams();
+			this.searchQuery.set(params['search'] || '');
+		});
+	}
 
-  // Computed signal for filtered products
-  filteredProducts = computed(() => {
-    const query = this.searchQuery().toLowerCase().trim();
-    if (!query) {
-      return this.productService.products();
-    }
-    return this.productService.products().filter(p => 
-      p.name.toLowerCase().includes(query) ||
-      p.description.toLowerCase().includes(query)
-    );
-  });
+	// Computed signal for filtered products
+	filteredProducts = computed(() => {
+		const query = this.searchQuery().toLowerCase().trim();
+		if (!query) {
+			return this.productService.products();
+		}
+		return this.productService.products().filter(p => 
+			p.name.toLowerCase().includes(query) ||
+			p.description.toLowerCase().includes(query)
+		);
+	});
 
-  // Update URL when search changes
-  onSearchChange(query: string) {
-    this.router.navigate([], {
-      queryParams: { search: query || null },
-      queryParamsHandling: 'merge'
-    });
-  }
+	// Update URL when search changes
+	onSearchChange(query: string) {
+		this.router.navigate([], {
+			queryParams: { search: query || null },
+			queryParamsHandling: 'merge'
+		});
+	}
 }
 ```
 
@@ -370,23 +371,23 @@ Update `products-page.html`:
 
 ```html
 <div class="products-page">
-  <h1>Products</h1>
+	<h1>Products</h1>
   
-  <app-search-form (searchChange)="onSearchChange($event)"></app-search-form>
+	<app-search-form (searchChange)="onSearchChange($event)"></app-search-form>
   
-  @if (searchQuery()) {
-    <p class="search-info">Searching for: "{{ searchQuery() }}"</p>
-  }
+	@if (searchQuery()) {
+		<p class="search-info">Searching for: "{{ searchQuery() }}"</p>
+	}
   
-  @if (filteredProducts().length > 0) {
-    <div class="products-grid">
-      @for (product of filteredProducts(); track product.id) {
-        <app-product-card [product]="product"></app-product-card>
-      }
-    </div>
-  } @else {
-    <p class="no-results">No products found matching "{{ searchQuery() }}"</p>
-  }
+	@if (filteredProducts().length > 0) {
+		<div class="products-grid">
+			@for (product of filteredProducts(); track product.id) {
+				<app-product-card [product]="product"></app-product-card>
+			}
+		</div>
+	} @else {
+		<p class="no-results">No products found matching "{{ searchQuery() }}"</p>
+	}
 </div>
 ```
 
