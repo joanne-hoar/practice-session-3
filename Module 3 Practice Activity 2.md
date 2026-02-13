@@ -235,4 +235,4 @@ Update `products-page.html`:
 
 Notice how the URL updates when you search, and you can bookmark or share these search results!
 
-**Next Steps:** Practice Activity 2 will cover reactive forms (required for Assignment 3) and custom validators.
+**Next Steps:** Practice Activity 4 will cover reactive forms (required for Assignment 3) and custom validators.
