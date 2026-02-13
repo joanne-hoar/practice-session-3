@@ -180,5 +180,4 @@ import { RouterLink } from '@angular/router';
 
 ---
 
-
-
+**Next Steps:** Practice Activity 2 covers Angular search and filtering with signals.
