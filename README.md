@@ -7,11 +7,19 @@ Welcome to your personalized PracticeSession project. This project demonstrates 
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.1.
 
-## Practice Activities
 
-- [Module 1 Practice Activity 1](Module%201%20Practice%20Activity%201.md)
-- [Module 1 Practice Activity 2](Module%201%20Practice%20Activity%202.md)
-- [Module 1 Practice Activity 3](Module%201%20Practice%20Activity%203.md)
+## Practice Activities (Module 3)
+
+- [Practice Activity 1: Advanced Angular Routing](Module%203%20Practice%20Activity%201.md)
+	- Learn advanced Angular routing, route parameters, and component input binding with routes.
+- [Practice Activity 2: Angular Search & Filtering with Signals](Module%203%20Practice%20Activity%202.md)
+	- Build a search form using Angular signals, filter product lists dynamically, and sync search state with query parameters.
+- [Practice Activity 4: Angular Reactive Forms & Custom Validation](Module%203%20Practice%20Activity%204.md)
+	- Create and validate Angular reactive forms, implement custom validators, and handle navigation after form submission.
+
+> Note: Practice Activity 3 covers React form validation and routing (see [Module 3 Practice Activity 3](Module%203%20Practice%20Activity%203.md)).
+
+Earlier activities (Module 1 & 2) are available in their respective guides.
 
 ## Screenshot
 
