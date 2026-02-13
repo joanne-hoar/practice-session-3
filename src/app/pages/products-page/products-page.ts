@@ -28,8 +28,9 @@ export class ProductsPage {
 
   constructor() {
     effect(() => {
-      const params = this.queryParams() as { [key: string]: any };
-      this.searchQuery.set(params['search'] || '');
+      const params = this.queryParams() as Record<string, unknown>;
+      const search = typeof params['search'] === 'string' ? params['search'] : '';
+      this.searchQuery.set(search);
     });
   }
 

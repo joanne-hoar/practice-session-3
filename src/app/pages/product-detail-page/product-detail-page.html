@@ -10,6 +10,43 @@
       ></app-product-card>
       <button class="back-button" (click)="goBack()">← Back to Products</button>
     </div>
+
+    <!-- Review Form Section -->
+    <div class="review-section">
+      <h2>Write a Review</h2>
+      <form [formGroup]="reviewForm" (ngSubmit)="onSubmitReview()">
+        <!-- Reviewer Name Field -->
+        <div class="form-group">
+          <label for="reviewerName">Your Name *</label>
+          <input id="reviewerName" type="text" formControlName="reviewerName" placeholder="Enter your name"
+            [class.invalid]="reviewForm.get('reviewerName')?.touched && reviewForm.get('reviewerName')?.invalid" />
+          @if (reviewForm.get('reviewerName')?.touched && reviewForm.get('reviewerName')?.invalid) {
+            <div class="error">
+              @if (reviewForm.get('reviewerName')?.errors?.['required']) {<span>Name is required.</span>}
+              @if (reviewForm.get('reviewerName')?.errors?.['minlength']) {<span>Name must be at least 3 characters.</span>}
+              @if (reviewForm.get('reviewerName')?.errors?.['pattern']) {<span>Name can only contain letters and spaces.</span>}
+            </div>
+          }
+        </div>
+
+        <!-- Rating Field -->
+        <div class="form-group">
+          <label for="rating">Rating (1-5) *</label>
+          <input id="rating" type="number" formControlName="rating" min="1" max="5" placeholder="5"
+            [class.invalid]="reviewForm.get('rating')?.touched && reviewForm.get('rating')?.invalid" />
+          @if (reviewForm.get('rating')?.touched && reviewForm.get('rating')?.invalid) {
+            <div class="error">
+              @if (reviewForm.get('rating')?.errors?.['required']) {<span>Rating is required.</span>}
+              @if (reviewForm.get('rating')?.errors?.['min'] || reviewForm.get('rating')?.errors?.['max']) {<span>Rating must be between 1 and 5.</span>}
+            </div>
+          }
+        </div>
+
+
+        <!-- Submit Button -->
+        <button type="submit" [disabled]="!reviewForm.valid">Submit Review</button>
+      </form>
+    </div>
   } @else {
     <div class="error">
       <h2>Product Not Found</h2>
