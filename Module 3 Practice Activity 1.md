@@ -1,7 +1,7 @@
 
 # Front End Frameworks: Module 3: Practice Activity 1
 
-## Advanced Angular Routing and Form Validation
+## Advanced Angular Routing
 
 ### Learning Objectives
 - Master advanced Angular routing, including route parameters and redirects
